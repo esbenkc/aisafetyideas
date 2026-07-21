@@ -1,6 +1,7 @@
 <script lang="ts">
   import '../app.css';
   import { invalidate } from '$app/navigation';
+  import { page } from '$app/stores';
   import { onMount } from 'svelte';
   import Logo from '$lib/components/Logo.svelte';
   let { data, children } = $props();
@@ -14,7 +15,19 @@
   });
 </script>
 
+<!-- IN-DEVELOPMENT: front page stays indexable (banner shows dev status); demo-data pages are noindex. Remove this + the .dev-banner below when the site goes live -->
+<svelte:head>
+  {#if $page.url.pathname !== '/'}
+    <meta name="robots" content="noindex" />
+  {/if}
+</svelte:head>
+
 <div class="site">
+  <div class="dev-banner" role="alert">
+    <span class="dev-banner__tag">In development</span>
+    <span class="dev-banner__msg">Demo data, not up to date. Please don't link to this as a live resource yet.</span>
+  </div>
+
   <header class="site-header">
     <div class="site-header__inner">
       <a href="/" class="site-brand" aria-label="AI Safety Ideas - home">
@@ -61,3 +74,42 @@
     </div>
   </footer>
 </div>
+
+<style>
+  .dev-banner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem 0.75rem;
+    padding: 0.5rem 1rem;
+    text-align: center;
+    background: #ff9307;
+    color: #1a1d1b;
+    font-size: 0.82rem;
+    line-height: 1.35;
+    font-weight: 500;
+    border-bottom: 1px solid rgba(20, 24, 22, 0.2);
+  }
+  .dev-banner__tag {
+    flex: none;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    font-size: 0.68rem;
+    background: rgba(20, 24, 22, 0.16);
+    padding: 0.14rem 0.55rem;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  @media (prefers-color-scheme: dark) {
+    .dev-banner {
+      background: #d97800;
+      color: #fff;
+      border-bottom-color: rgba(0, 0, 0, 0.35);
+    }
+    .dev-banner__tag {
+      background: rgba(0, 0, 0, 0.28);
+    }
+  }
+</style>
